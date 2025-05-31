@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Finder - Find Your Perfect Stay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px);
+            border-radius: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            color: #4a5568;
+            position: relative;
+        }
+
+        .nav-menu li:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu-icon {
+            display: none;
+            width: 30px;
+            height: 22px;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 100%;
+            height: 3px;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 60px 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="80" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .search-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: -1px;
+        }
+
+        .search-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 20px 32px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 500;
+            outline: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .search-bar:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-bar::placeholder {
+            color: #718096;
+            font-weight: 400;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-btn {
+            padding: 16px 32px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 60px 50px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .results-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .results-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Hostels Grid */
+        .hostels-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 35px;
+        }
+
+        .hostel-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hostel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .hostel-card:hover::before {
+            opacity: 1;
+        }
+
+        .hostel-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="white" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+        }
+
+        .hostel-content {
+            padding: 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hostel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .hostel-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .hostel-location {
+            font-size: 15px;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .hostel-type {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .hostel-type.women {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            box-shadow: 0 4px 6px rgba(229, 62, 62, 0.3);
+        }
+
+        .hostel-type.men {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            box-shadow: 0 4px 6px rgba(56, 161, 105, 0.3);
+        }
+
+        .hostel-description {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .hostel-price {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .hostel-amenities {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .amenity {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .amenity:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .no-results {
+            text-align: center;
+            color: #718096;
+            padding: 80px 20px;
+            font-size: 20px;
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            opacity: 0.7;
+        }
+
+        .no-results h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .no-results p {
+            font-size: 16px;
+            color: #718096;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 20px 25px;
+            }
+
+            .logo {
+                font-size: 28px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .menu-icon {
+                display: flex;
+            }
+
+            .search-section {
+                padding: 50px 25px;
+            }
+
+            .search-title {
+                font-size: 36px;
+            }
+
+            .search-subtitle {
+                font-size: 18px;
+            }
+
+            .search-bar {
+                padding: 18px 24px;
+                font-size: 16px;
+            }
+
+            .filter-buttons {
+                gap: 15px;
+            }
+
+            .filter-btn {
+                padding: 14px 24px;
+                font-size: 15px;
+                min-width: 120px;
+            }
+
+            .main-content {
+                padding: 40px 25px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .results-title {
+                font-size: 24px;
+            }
+
+            .hostels-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .hostel-content {
+                padding: 24px;
+            }
+
+            .hostel-name {
+                font-size: 20px;
+            }
+
+            .hostel-price {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .search-section {
+                padding: 40px 20px;
+            }
+
+            .search-title {
+                font-size: 32px;
+            }
+
+            .search-bar {
+                padding: 16px 20px;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .filter-btn {
+                width: 200px;
+                padding: 12px 20px;
+            }
+
+            .main-content {
+                padding: 30px 20px;
+            }
+
+            .image-placeholder {
+                height: 180px;
+            }
+
+            .hostel-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                🏠 Hostel Finder
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li onclick="showSection('home')">Home</li>
+                    <li onclick="showSection('about')">About</li>
+                    <li onclick="showSection('contact')">Contact</li>
+                    <li onclick="showSection('help')">Help</li>
+                </ul>
+                <div class="menu-icon" onclick="toggleMobileMenu()">
+                    <div class="menu-line"></div>
+                    <div class="menu-line"></div>
+                    <div class="menu-line"></div>
+                </div>
+            </nav>
+        </header>
+
+        <section class="search-section">
+            <h1 class="search-title">Find Your Perfect Hostel</h1>
+            <p class="search-subtitle">Discover comfortable and affordable accommodation options</p>
+            
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search by hostel name, location, or amenities..." id="searchInput">
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterHostels('all')" id="allBtn">All Hostels</button>
+                <button class="filter-btn" onclick="filterHostels('men')" id="menBtn">Men's Hostels</button>
+                <button class="filter-btn" onclick="filterHostels('women')" id="womenBtn">Women's Hostels</button>
+            </div>
+        </section>
+
+        <main class="main-content">
+            <div class="results-header">
+                <h2 class="results-title">Available Hostels</h2>
+                <span class="results-count" id="resultsCount">22 hostels found</span>
+            </div>
+
+            <div class="hostels-container" id="hostelsContainer">
+                <!-- Hostels will be populated by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const hostels = [
+            {
+                id: 1,
+                name: "Green Valley PG",
+                type: "men",
+                location: "Koramangala, Bangalore",
+                price: "₹8,500/month",
+                amenities: ["WiFi", "AC", "Meals", "Laundry"],
+                description: "Modern PG with all facilities including 24/7 security and housekeeping."
+            },
+            {
+                id: 2,
+                name: "Rose Garden Ladies Hostel",
+                type: "women",
+                location: "HSR Layout, Bangalore",
+                price: "₹9,200/month",
+                amenities: ["WiFi", "Security", "Meals", "Gym"],
+                description: "Safe and secure accommodation for women with modern amenities."
+            },
+            {
+                id: 3,
+                name: "Tech Hub PG",
+                type: "men",
+                location: "Electronic City, Bangalore",
+                price: "₹7,800/month",
+                amenities: ["WiFi", "Power Backup", "Parking"],
+                description: "Perfect for IT professionals with high-speed internet and workspace."
+            },
+            {
+                id: 4,
+                name: "Comfort Stay Ladies",
+                type: "women",
+                location: "Whitefield, Bangalore",
+                price: "₹8,900/month",
+                amenities: ["WiFi", "AC", "Meals", "CCTV"],
+                description: "Comfortable living for working women with excellent security."
+            },
+            {
+                id: 5,
+                name: "Urban Nest PG",
+                type: "men",
+                location: "Indiranagar, Bangalore",
+                price: "₹10,500/month",
+                amenities: ["WiFi", "AC", "Housekeeping", "Meals"],
+                description: "Premium accommodation in prime location with luxury amenities."
+            },
+            {
+                id: 6,
+                name: "Pearl Women's Hostel",
+                type: "women",
+                location: "Jayanagar, Bangalore",
+                price: "₹8,200/month",
+                amenities: ["WiFi", "Security", "Meals", "Recreation"],
+                description: "Home away from home for girls with recreational facilities."
+            },
+            {
+                id: 7,
+                name: "Metro Boys PG",
+                type: "men",
+                location: "MG Road, Bangalore",
+                price: "₹11,200/month",
+                amenities: ["WiFi", "AC", "Metro Access", "Meals"],
+                description: "Walking distance to metro station with premium facilities."
+            },
+            {
+                id: 8,
+                name: "Sunrise Ladies PG",
+                type: "women",
+                location: "BTM Layout, Bangalore",
+                price: "₹7,900/month",
+                amenities: ["WiFi", "Security", "Meals", "Study Room"],
+                description: "Ideal for students and professionals with dedicated study areas."
+            },
+            {
+                id: 9,
+                name: "Skyline Men's Hostel",
+                type: "men",
+                location: "Marathahalli, Bangalore",
+                price: "₹9,800/month",
+                amenities: ["WiFi", "AC", "Gym", "Parking", "Laundry"],
+                description: "Modern hostel with fitness center and rooftop terrace views."
+            },
+            {
+                id: 10,
+                name: "Crystal Palace Ladies",
+                type: "women",
+                location: "Richmond Town, Bangalore",
+                price: "₹10,200/month",
+                amenities: ["WiFi", "AC", "Library", "Garden", "Security"],
+                description: "Elegant accommodation with beautiful gardens and quiet study spaces."
+            },
+            {
+                id: 11,
+                name: "Digital Nomad PG",
+                type: "men",
+                location: "Bellandur, Bangalore",
+                price: "₹12,000/month",
+                amenities: ["High-Speed WiFi", "Coworking Space", "AC", "Meals"],
+                description: "Co-living space designed for remote workers and entrepreneurs."
+            },
+            {
+                id: 12,
+                name: "Blossom Girls Hostel",
+                type: "women",
+                location: "Malleshwaram, Bangalore",
+                price: "₹8,600/month",
+                amenities: ["WiFi", "Traditional Meals", "Yoga Room", "Security"],
+                description: "Traditional yet modern hostel with focus on wellness and culture."
+            },
+            {
+                id: 13,
+                name: "Phoenix Men's Lodge",
+                type: "men",
+                location: "Rajajinagar, Bangalore",
+                price: "₹7,200/month",
+                amenities: ["WiFi", "Common Kitchen", "TV Lounge", "Parking"],
+                description: "Budget-friendly accommodation with homely atmosphere and community feel."
+            },
+            {
+                id: 14,
+                name: "Serenity Women's PG",
+                type: "women",
+                location: "JP Nagar, Bangalore",
+                price: "₹9,500/month",
+                amenities: ["WiFi", "AC", "Spa Services", "Meals", "Garden"],
+                description: "Luxurious PG with spa facilities and beautifully landscaped gardens."
+            },
+            {
+                id: 15,
+                name: "Campus Connect Boys",
+                type: "men",
+                location: "Banashankari, Bangalore",
+                price: "₹6,800/month",
+                amenities: ["WiFi", "Study Hall", "Games Room", "Meals"],
+                description: "Student-friendly hostel near colleges with dedicated study facilities."
+            },
+            {
+                id: 16,
+                name: "Elite Ladies Residence",
+                type: "women",
+                location: "Brigade Road, Bangalore",
+                price: "₹12,500/month",
+                amenities: ["WiFi", "Premium AC", "Concierge", "Spa", "Rooftop"],
+                description: "Ultra-premium accommodation in the heart of the city with luxury services."
+            },
+            {
+                id: 17,
+                name: "Harmony Men's PG",
+                type: "men",
+                location: "Yelahanka, Bangalore",
+                price: "₹8,200/month",
+                amenities: ["WiFi", "AC", "Shuttle Service", "Meals", "Gym"],
+                description: "Well-connected PG with airport shuttle service and fitness facilities."
+            },
+            {
+                id: 18,
+                name: "Garden View Ladies",
+                type: "women",
+                location: "Basavanagudi, Bangalore",
+                price: "₹8,400/month",
+                amenities: ["WiFi", "Organic Garden", "Yoga", "Security", "Meals"],
+                description: "Eco-friendly hostel with organic garden and daily yoga sessions."
+            },
+            {
+                id: 19,
+                name: "Fortune Boys Hostel",
+                type: "men",
+                location: "Hebbal, Bangalore",
+                price: "₹9,600/month",
+                amenities: ["WiFi", "AC", "Swimming Pool", "Meals", "Security"],
+                description: "Premium hostel with swimming pool and recreational facilities."
+            },
+            {
+                id: 20,
+                name: "Moonlight Women's PG",
+                type: "women",
+                location: "RT Nagar, Bangalore",
+                price: "₹7,700/month",
+                amenities: ["WiFi", "Security", "Common Kitchen", "Terrace", "Laundry"],
+                description: "Cozy accommodation with terrace garden and flexible meal options."
+            },
+            {
+                id: 21,
+                name: "Executive Men's Lodge",
+                type: "men",
+                location: "Cunningham Road, Bangalore",
+                price: "₹11,800/month",
+                amenities: ["WiFi", "Premium AC", "Business Center", "Valet", "Meals"],
+                description: "Business-class accommodation with professional services and prime location."
+            },
+            {
+                id: 22,
+                name: "Tranquil Ladies Haven",
+                type: "women",
+                location: "Sadashivanagar, Bangalore",
+                price: "₹10,800/month",
+                amenities: ["WiFi", "AC", "Meditation Room", "Organic Meals", "Library"],
+                description: "Peaceful retreat with meditation facilities and organic meal options."
+            }
+        ];
+
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        function renderHostels() {
+            const container = document.getElementById('hostelsContainer');
+            const resultsCount = document.getElementById('resultsCount');
+            let filteredHostels = hostels;
+
+            // Apply filter
+            if (currentFilter !== 'all') {
+                filteredHostels = filteredHostels.filter(hostel => hostel.type === currentFilter);
+            }
+
+            // Apply search
+            if (searchTerm) {
+                filteredHostels = filteredHostels.filter(hostel =>
+                    hostel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    hostel.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    hostel.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
+            }
+
+            // Update results count
+            resultsCount.textContent = `${filteredHostels.length} hostel${filteredHostels.length !== 1 ? 's' : ''} found`;
+
+            if (filteredHostels.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🏠</div>
+                        <h3>No hostels found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredHostels.map(hostel => `
+                <div class="hostel-card" onclick="selectHostel(${hostel.id})">
+                    <div class="image-placeholder">
+                        📷 Add Hostel Image
+                    </div>
+                    <div class="hostel-content">
+                        <div class="hostel-header">
+                            <div>
+                                <div class="hostel-name">${hostel.name}</div>
+                                <div class="hostel-location">📍 ${hostel.location}</div>
+                            </div>
+                            <div class="hostel-type ${hostel.type}">${hostel.type}</div>
+                        </div>
+                        <div class="hostel-description">${hostel.description}</div>
+                        <div class="hostel-price">${hostel.price}</div>
+                        <div class="hostel-amenities">
+                            ${hostel.amenities.map(amenity => `<span class="amenity">${amenity}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterHostels(type) {
+            currentFilter = type;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(type === 'all' ? 'allBtn' : type === 'men' ? 'menBtn' : 'womenBtn').classList.add('active');
+            
+            renderHostels();
+        }
+
+       function selectHostel(id) {
+    // If id is 1, go to "second.html"
+    // If id is 2, go to "second1.html", and so on...
+
+    const fileName = id === 1 ? 'second.html' : `second${id - 1}.html`;
+    window.location.href = fileName;
+}
+
+
+        function showSection(section) {
+            alert(`Navigate to ${section} section`);
+        }
+
+        function toggleMobileMenu() {
+            alert('Mobile menu toggle - you can implement a slide-out menu here');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchTerm = e.target.value;
+            renderHostels();
+        });
+
+        // Initial render
+        renderHostels();
+    </script>
+</body>
+</html>
